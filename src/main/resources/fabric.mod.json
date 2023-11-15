@@ -25,6 +25,10 @@
       }
     ],
     "stationapi:event_bus_client": [
+      {
+        "adapter": "kotlin",
+        "value": "com.kydzombie.divinelegacy.DivineLegacyClient"
+      }
     ],
     "stationapi:event_bus_server": [
     ]

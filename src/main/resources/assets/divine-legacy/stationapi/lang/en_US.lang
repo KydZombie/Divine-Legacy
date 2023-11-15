@@ -1,0 +1,10 @@
+item.cleansing_dust.name=Cleansing Dust
+item.vial.name=Vial
+item.vial.empty=Empty Vial
+item.vial.unformatted=Vial of %s
+
+fluid.water.name=Water
+fluid.cleansing_water.name=Cleansing Water
+fluid.lava.name=Lava
+fluid.milk.name=Milk
+fluid.ink.name=Ink

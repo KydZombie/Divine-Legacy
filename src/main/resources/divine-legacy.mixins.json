@@ -4,6 +4,8 @@
   "package": "com.kydzombie.divinelegacy.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "CleansedWaterMixin",
+    "PlayerMixin"
   ],
   "server": [
   ],

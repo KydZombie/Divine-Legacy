@@ -1,0 +1,38 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "divine-legacy:item/vial"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "divine-legacy:contents": 0.2
+      },
+      "model": "divine-legacy:item/vial/water"
+    },
+    {
+      "predicate": {
+        "divine-legacy:contents": 0.4
+      },
+      "model": "divine-legacy:item/vial/cleansing_water"
+    },
+    {
+      "predicate": {
+        "divine-legacy:contents": 0.6
+      },
+      "model": "divine-legacy:item/vial/lava"
+    },
+    {
+      "predicate": {
+        "divine-legacy:contents": 0.8
+      },
+      "model": "divine-legacy:item/vial/milk"
+    },
+    {
+      "predicate": {
+        "divine-legacy:contents": 1.0
+      },
+      "model": "divine-legacy:item/vial/ink"
+    }
+  ]
+}
