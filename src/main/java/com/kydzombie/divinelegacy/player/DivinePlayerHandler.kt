@@ -8,7 +8,7 @@ import kotlin.math.min
 
 const val MAX_ENERGY = 100
 
-class DivinePlayerHandler(private val player: PlayerBase): PlayerHandler {
+class DivinePlayerHandler(private val player: PlayerBase) : PlayerHandler {
     var divineLevel = 0
     var energy = 0
 
@@ -26,7 +26,6 @@ class DivinePlayerHandler(private val player: PlayerBase): PlayerHandler {
 
     override fun onLivingUpdate(): Boolean {
         energy = min(energy + 1, MAX_ENERGY)
-        println(energy)
         return false
     }
 

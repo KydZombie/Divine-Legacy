@@ -3,6 +3,7 @@ item.vial.name=Vial
 item.vial.empty=Empty Vial
 item.vial.unformatted=Vial of %s
 item.artificial_pearl.name=Artificial Pearl
+item.artificial_pearl.description=Not quite an ender pearl, but \n close enough for most purposes
 
 fluid.water.name=Water
 fluid.cleansing_water.name=Cleansing Water

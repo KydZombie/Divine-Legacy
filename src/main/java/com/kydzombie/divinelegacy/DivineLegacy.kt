@@ -8,8 +8,8 @@ import com.kydzombie.divinelegacy.item.Vial
 import com.kydzombie.divinelegacy.item.Vial.Companion.Contents
 import com.kydzombie.divinelegacy.item.Vial.Companion.getVialContents
 import com.kydzombie.divinelegacy.player.DivinePlayerHandler
-import com.kydzombie.divinelegacy.registry.CleansingRecipeRegistry.CleansingRecipe
-import com.kydzombie.divinelegacy.registry.CleansingRecipeRegistry.CleansingRecipeRegistryEvent
+import com.kydzombie.divinelegacy.registry.CleansingRecipe
+import com.kydzombie.divinelegacy.registry.CleansingRecipeRegistryEvent
 import net.mine_diver.unsafeevents.listener.EventListener
 import net.minecraft.item.ItemBase
 import net.minecraft.item.ItemInstance
@@ -31,6 +31,7 @@ object DivineLegacy {
     lateinit var cleansingDust: CleansingDust
     lateinit var vial: Vial
     lateinit var artificialPearl: ArtificialPearl
+
     @EventListener
     private fun registerItems(event: ItemRegistryEvent) {
         cleansingDust = CleansingDust(MOD_ID.id("cleansing_dust"))

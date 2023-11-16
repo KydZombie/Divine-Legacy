@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "divine-legacy",
   "version": "${version}",
-
   "name": "Divine Legacy",
   "description": "Description left blank.",
   "authors": [
@@ -12,10 +11,8 @@
     "homepage": "https://kydzombie.com",
     "sources": "https://github.com/kydzombie/divine-legacy"
   },
-
   "license": "MIT",
   "icon": "assets/divine-legacy/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "stationapi:event_bus": [
@@ -36,7 +33,6 @@
   "mixins": [
     "divine-legacy.mixins.json"
   ],
-
   "depends": {
     "minecraft": "1.0.0-beta.7.3"
   }

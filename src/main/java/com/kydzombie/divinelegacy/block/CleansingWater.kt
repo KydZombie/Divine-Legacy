@@ -2,8 +2,8 @@ package com.kydzombie.divinelegacy.block
 
 import com.kydzombie.divinelegacy.entity.CleansableItemEntity
 import com.kydzombie.divinelegacy.player.DivinePlayerHandler.Companion.getDivineStats
+import com.kydzombie.divinelegacy.registry.CleansingRecipe
 import com.kydzombie.divinelegacy.registry.CleansingRecipeRegistry
-import com.kydzombie.divinelegacy.registry.CleansingRecipeRegistry.CleansingRecipe
 import com.kydzombie.divinelegacy.util.sendChatMessage
 import net.minecraft.block.BlockBase
 import net.minecraft.block.material.Material
@@ -18,9 +18,9 @@ import java.util.*
 
 const val USABLE_UNTIL_LEVEL = 10
 
-class CleansingWaterFlowing(identifier: Identifier): TemplateFlowingFluid(identifier, Material.WATER)
+class CleansingWaterFlowing(identifier: Identifier) : TemplateFlowingFluid(identifier, Material.WATER)
 
-class CleansingWaterStill(identifier: Identifier): TemplateStillFluid(identifier, Material.WATER) {
+class CleansingWaterStill(identifier: Identifier) : TemplateStillFluid(identifier, Material.WATER) {
     override fun onEntityCollision(level: Level, x: Int, y: Int, z: Int, entity: EntityBase) {
         if (level.getTileMeta(x, y, z) != 0) {
             super.onEntityCollision(level, x, y, z, entity)
@@ -39,8 +39,10 @@ class CleansingWaterStill(identifier: Identifier): TemplateStillFluid(identifier
                 level.setTile(x, y, z, BlockBase.STILL_WATER.id)
                 return
             }
+
             is CleansableItemEntity -> {
                 fun getNearbyItems(): HashMap<PlayerBase?, Vector<CleansableItemEntity>> {
+                    @Suppress("UNCHECKED_CAST")
                     val uncheckedItems = (level.getEntities(
                         CleansableItemEntity::class.java,
                         Box.create(x.toDouble(), y.toDouble(), z.toDouble(), x + 1.0, y + 1.0, z + 1.0)
@@ -82,7 +84,7 @@ class CleansingWaterStill(identifier: Identifier): TemplateStillFluid(identifier
 
                 val recipes = playerItems.getRecipes().sortByImportance()
 
-                recipes.forEach {(player, recipe) ->
+                recipes.forEach { (player, recipe) ->
                     if (recipe.takeCosts(level, x, y, z, player, playerItems[player]!!)) return@onEntityCollision
                 }
             }
