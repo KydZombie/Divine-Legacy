@@ -18,7 +18,7 @@ object CleansingRecipeRegistry {
                     }
                 }
             } else false
-        }.sortedWith(compareBy { it.priority })
+        }
     }
 
     fun ItemInstance?.isCleansable(): Boolean = if (this == null) false else
