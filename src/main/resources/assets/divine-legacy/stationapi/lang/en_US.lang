@@ -2,6 +2,7 @@ item.cleansing_dust.name=Cleansing Dust
 item.vial.name=Vial
 item.vial.empty=Empty Vial
 item.vial.unformatted=Vial of %s
+item.artificial_pearl.name=Artificial Pearl
 
 fluid.water.name=Water
 fluid.cleansing_water.name=Cleansing Water

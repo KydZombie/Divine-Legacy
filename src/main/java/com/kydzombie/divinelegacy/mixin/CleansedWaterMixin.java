@@ -20,7 +20,7 @@ public abstract class CleansedWaterMixin extends Fluid {
 
     @Override
     public void onCollideWithEntity(Level level, int x, int y, int z, EntityBase entity, Vec3f arg3) {
-        if (id == BlockBase.STILL_WATER.id && entity instanceof Item itemEntity && itemEntity.item != null && itemEntity.item.itemId == DivineLegacy.cleansingDust.id) {
+        if (id == BlockBase.STILL_WATER.id && level.getTileId(x, y + 1, z) == 0 && entity instanceof Item itemEntity && itemEntity.item != null && itemEntity.item.itemId == DivineLegacy.cleansingDust.id && itemEntity.item.count > 0) {
             itemEntity.item.count--;
             if (itemEntity.item.count <= 0) {
                 level.removeEntity(itemEntity);

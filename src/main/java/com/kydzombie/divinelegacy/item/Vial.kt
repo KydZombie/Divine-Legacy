@@ -15,27 +15,11 @@ import net.minecraft.util.maths.MathHelper
 import net.minecraft.util.maths.Vec3f
 import net.modificationstation.stationapi.api.client.gui.CustomTooltipProvider
 import net.modificationstation.stationapi.api.registry.Identifier
+import net.modificationstation.stationapi.api.template.item.TemplateItemBase
 
-class Vial(identifier: Identifier): CleansableItem(identifier), CustomTooltipProvider {
+class Vial(identifier: Identifier): TemplateItemBase(identifier), CustomTooltipProvider {
     init {
         setTranslationKey(identifier)
-    }
-
-    override fun getCleansingOutput(itemInstance: ItemInstance, player: PlayerBase): ItemInstance? {
-        if (itemInstance.getVialContents() == Contents.WATER) {
-            return ItemInstance(itemInstance.type).apply {
-                setVialContents(Contents.CLEANSING_WATER)
-            }
-        }
-        return null
-    }
-
-    override fun getCleansingLevelRequirement(player: PlayerBase): Int {
-        return 2
-    }
-
-    override fun getCleansingLevelCost(player: PlayerBase): Int {
-        return 1
     }
 
     override fun use(itemInstance: ItemInstance, level: Level, player: PlayerBase): ItemInstance {
@@ -135,9 +119,12 @@ class Vial(identifier: Identifier): CleansableItem(identifier), CustomTooltipPro
             fun getTranslation(): String = I18n.translate("fluid.divine-legacy:${this.toString().lowercase()}.name")
         }
 
+        fun createVial(contents: Contents): ItemInstance = ItemInstance(DivineLegacy.vial).apply { setVialContents(contents) }
+
         fun ItemInstance.getVialContents(): Contents = Contents.entries[stationNBT.getByte("contents").toInt()]
 
-        private fun ItemInstance.setVialContents(contents: Contents) = stationNBT.put("contents", contents.ordinal.toByte())
+        fun ItemInstance.setVialContents(contents: Contents) = stationNBT.put("contents", contents.ordinal.toByte())
+
         private fun ItemInstance.setVialContents(contents: Contents, player: PlayerBase) {
             if (count == 1) setVialContents(contents)
             val newVial = ItemInstance(type).apply {
