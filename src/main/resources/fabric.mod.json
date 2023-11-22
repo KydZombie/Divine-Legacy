@@ -28,6 +28,12 @@
       }
     ],
     "stationapi:event_bus_server": [
+    ],
+    "bhcreative:event_bus": [
+      {
+        "adapter": "kotlin",
+        "value": "com.kydzombie.divinelegacy.compat.BHCreativeCompat"
+      }
     ]
   },
   "mixins": [

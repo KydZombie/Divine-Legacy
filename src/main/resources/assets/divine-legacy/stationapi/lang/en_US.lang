@@ -10,3 +10,9 @@ fluid.cleansing_water.name=Cleansing Water
 fluid.lava.name=Lava
 fluid.milk.name=Milk
 fluid.ink.name=Ink
+
+tile.altar.name=Altar
+tile.pedestal.name=Pedestal
+
+tab.blocks.name=Divine Legacy: Blocks
+tab.items.name=Divine Legacy: Items

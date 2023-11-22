@@ -1,26 +1,27 @@
 package com.kydzombie.divinelegacy.player
 
-import net.minecraft.entity.player.PlayerBase
-import net.minecraft.util.io.CompoundTag
+import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.nbt.NbtCompound
 import net.modificationstation.stationapi.api.entity.player.PlayerHandler
 import net.modificationstation.stationapi.impl.entity.player.PlayerAPI
 import kotlin.math.min
 
 const val MAX_ENERGY = 100
 
-class DivinePlayerHandler(private val player: PlayerBase) : PlayerHandler {
+class DivinePlayerHandler(private val player: PlayerEntity) : PlayerHandler {
+    // TODO: Per-god divine level
     var divineLevel = 0
     var energy = 0
 
-    override fun readEntityBaseFromNBT(tag: CompoundTag): Boolean {
-        divineLevel = tag.getInt("divine-legacy:divine_level")
-        energy = tag.getInt("divine-legacy:energy")
+    override fun readEntityBaseFromNBT(nbt: NbtCompound): Boolean {
+        divineLevel = nbt.getInt("divine-legacy:divine_level")
+        energy = nbt.getInt("divine-legacy:energy")
         return false
     }
 
-    override fun writeEntityBaseToNBT(tag: CompoundTag): Boolean {
-        tag.put("divine-legacy:divine_level", divineLevel)
-        tag.put("divine-legacy:energy", energy)
+    override fun writeEntityBaseToNBT(nbt: NbtCompound): Boolean {
+        nbt.putInt("divine-legacy:divine_level", divineLevel)
+        nbt.putInt("divine-legacy:energy", energy)
         return false
     }
 
@@ -30,7 +31,7 @@ class DivinePlayerHandler(private val player: PlayerBase) : PlayerHandler {
     }
 
     companion object {
-        fun PlayerBase.getDivineStats(): DivinePlayerHandler {
+        fun PlayerEntity.getDivineStats(): DivinePlayerHandler {
             return PlayerAPI.getPlayerHandler(this, DivinePlayerHandler::class.java) as DivinePlayerHandler
         }
     }

@@ -1,9 +1,9 @@
 package com.kydzombie.divinelegacy.entity
 
-import net.minecraft.entity.Item
-import net.minecraft.entity.player.PlayerBase
-import net.minecraft.item.ItemInstance
-import net.minecraft.level.Level
+import net.minecraft.entity.ItemEntity
+import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.item.ItemStack
+import net.minecraft.world.World
 
-class CleansableItemEntity(level: Level, x: Double, y: Double, z: Double, item: ItemInstance, val player: PlayerBase?) :
-    Item(level, x, y, z, item)
+class CleansableItemEntity(world: World, x: Double, y: Double, z: Double, stack: ItemStack, val player: PlayerEntity?) :
+    ItemEntity(world, x, y, z, stack)

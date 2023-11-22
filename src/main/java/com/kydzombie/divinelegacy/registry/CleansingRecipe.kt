@@ -2,19 +2,19 @@ package com.kydzombie.divinelegacy.registry
 
 import com.kydzombie.divinelegacy.entity.CleansableItemEntity
 import com.kydzombie.divinelegacy.player.DivinePlayerHandler.Companion.getDivineStats
-import net.minecraft.entity.Item
-import net.minecraft.entity.player.PlayerBase
-import net.minecraft.item.ItemInstance
-import net.minecraft.level.Level
-import net.modificationstation.stationapi.api.template.block.TemplateStillFluid
+import net.minecraft.block.Block
+import net.minecraft.entity.ItemEntity
+import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.item.ItemStack
+import net.minecraft.world.World
 import kotlin.math.min
 
 const val CLEAR_WATER_OFFSET = 1024
 
 // TODO: Cleansing timer
 class CleansingRecipe(
-    val input: Array<ItemInstance>,
-    val output: Array<ItemInstance>,
+    val input: Array<ItemStack>,
+    val output: Array<ItemStack>,
     private val clearWater: Boolean = false,
     private val levelCost: Int = 0,
     private val levelRequirement: Int = levelCost,
@@ -27,44 +27,45 @@ class CleansingRecipe(
             // Check if the existing cleansable items contains the same item
             input.filter { inputItem ->
                 CleansingRecipeRegistry.cleansableItems.none { existingItem ->
-                    existingItem.isDamageAndIDIdentical(inputItem)
+                    existingItem.isItemEqual(inputItem)
                 }
             }
         )
         CleansingRecipeRegistry.recipes = CleansingRecipeRegistry.recipes.plus(this)
     }
 
-    fun meetsRequirements(player: PlayerBase?): Boolean {
+    fun meetsRequirements(player: PlayerEntity?): Boolean {
         if (player == null) return requiresPlayer
         val handler = player.getDivineStats()
         return handler.divineLevel >= levelRequirement && handler.divineLevel >= levelCost && handler.energy >= energyCost
     }
 
     fun takeCosts(
-        level: Level,
+        world: World,
         x: Int,
         y: Int,
         z: Int,
-        player: PlayerBase?,
+        player: PlayerEntity?,
         items: List<CleansableItemEntity>
     ): Boolean {
         input.forEach { recipeItem ->
-            val matchingItems = items.filter { recipeItem.isDamageAndIDIdentical(it.item) }
+            val matchingItems = items.filter { recipeItem.isItemEqual(it.stack) }
             var remainingToCollect = recipeItem.count
             matchingItems.forEach itemMatch@{ itemEntity ->
                 if (remainingToCollect <= 0) return@itemMatch
-                val toTake = min(remainingToCollect, itemEntity.item.count)
+                val toTake = min(remainingToCollect, itemEntity.stack.count)
                 remainingToCollect -= toTake
-                itemEntity.item.count -= toTake
-                if (itemEntity.item.count <= 0) {
-                    level.removeEntity(itemEntity)
+                itemEntity.stack.count -= toTake
+                if (itemEntity.stack.count <= 0) {
+                    world.method_231(itemEntity)
                 }
             }
         }
         output.forEach { recipeItem ->
-            val spawnedItem = Item(level, x.toDouble() + 0.5, y.toDouble() + 0.5, z.toDouble() + 0.5, recipeItem.copy())
+            val spawnedItem =
+                ItemEntity(world, x.toDouble() + 0.5, y.toDouble() + 0.5, z.toDouble() + 0.5, recipeItem.copy())
             spawnedItem.velocityY = 0.2
-            level.spawnEntity(spawnedItem)
+            world.method_210(spawnedItem)
         }
 
         if (player != null) {
@@ -74,7 +75,7 @@ class CleansingRecipe(
         }
 
         return if (clearWater) {
-            level.setTile(x, y, z, TemplateStillFluid.STILL_WATER.id)
+            world.setBlock(x, y, z, Block.WATER.id)
             true
         } else false
     }

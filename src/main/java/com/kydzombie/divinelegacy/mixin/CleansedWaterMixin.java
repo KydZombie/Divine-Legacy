@@ -1,33 +1,32 @@
 package com.kydzombie.divinelegacy.mixin;
 
 import com.kydzombie.divinelegacy.DivineLegacy;
-import net.minecraft.block.BlockBase;
-import net.minecraft.block.Fluid;
-import net.minecraft.block.StillFluid;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Item;
-import net.minecraft.level.Level;
-import net.minecraft.util.maths.Vec3f;
+import net.minecraft.block.Block;
+import net.minecraft.block.LiquidBlock;
+import net.minecraft.block.Material;
+import net.minecraft.block.StillLiquidBlock;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Mixin(StillFluid.class)
-public abstract class CleansedWaterMixin extends Fluid {
+@Mixin(StillLiquidBlock.class)
+public abstract class CleansedWaterMixin extends LiquidBlock {
 
     public CleansedWaterMixin(int i, Material arg) {
         super(i, arg);
     }
 
     @Override
-    public void onCollideWithEntity(Level level, int x, int y, int z, EntityBase entity, Vec3f arg3) {
-        if (id == BlockBase.STILL_WATER.id && level.getTileId(x, y + 1, z) == 0 && entity instanceof Item itemEntity && itemEntity.item != null && itemEntity.item.itemId == DivineLegacy.cleansingDust.id && itemEntity.item.count > 0) {
-            itemEntity.item.count--;
-            if (itemEntity.item.count <= 0) {
-                level.removeEntity(itemEntity);
+    public void onEntityCollision(World world, int x, int y, int z, Entity entity) {
+        if (id == Block.WATER.id && world.getBlockId(x, y + 1, z) == 0 && entity instanceof ItemEntity itemEntity && itemEntity.stack != null && itemEntity.stack.itemId == DivineLegacy.cleansingDust.id && itemEntity.stack.count > 0) {
+            itemEntity.stack.count--;
+            if (itemEntity.stack.count <= 0) {
+                world.method_231(itemEntity);
             }
-            level.setTile(x, y, z, DivineLegacy.cleansingWaterStill.id);
+            world.setBlock(x, y, z, DivineLegacy.cleansingWaterStill.id);
         } else {
-            super.onCollideWithEntity(level, x, y, z, entity, arg3);
+            super.onEntityCollision(world, x, y, z, entity);
         }
     }
 }

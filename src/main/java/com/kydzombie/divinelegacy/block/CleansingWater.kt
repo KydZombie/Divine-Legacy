@@ -5,29 +5,29 @@ import com.kydzombie.divinelegacy.player.DivinePlayerHandler.Companion.getDivine
 import com.kydzombie.divinelegacy.registry.CleansingRecipe
 import com.kydzombie.divinelegacy.registry.CleansingRecipeRegistry
 import com.kydzombie.divinelegacy.util.sendChatMessage
-import net.minecraft.block.BlockBase
-import net.minecraft.block.material.Material
-import net.minecraft.entity.EntityBase
-import net.minecraft.entity.player.PlayerBase
-import net.minecraft.level.Level
-import net.minecraft.util.maths.Box
-import net.modificationstation.stationapi.api.registry.Identifier
-import net.modificationstation.stationapi.api.template.block.TemplateFlowingFluid
-import net.modificationstation.stationapi.api.template.block.TemplateStillFluid
+import net.minecraft.block.Block
+import net.minecraft.block.Material
+import net.minecraft.entity.Entity
+import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.util.math.Box
+import net.minecraft.world.World
+import net.modificationstation.stationapi.api.template.block.TemplateFlowingLiquidBlock
+import net.modificationstation.stationapi.api.template.block.TemplateStillLiquidBlock
+import net.modificationstation.stationapi.api.util.Identifier
 import java.util.*
 
 const val USABLE_UNTIL_LEVEL = 10
 
-class CleansingWaterFlowing(identifier: Identifier) : TemplateFlowingFluid(identifier, Material.WATER)
+class CleansingWaterFlowing(identifier: Identifier) : TemplateFlowingLiquidBlock(identifier, Material.WATER)
 
-class CleansingWaterStill(identifier: Identifier) : TemplateStillFluid(identifier, Material.WATER) {
-    override fun onEntityCollision(level: Level, x: Int, y: Int, z: Int, entity: EntityBase) {
-        if (level.getTileMeta(x, y, z) != 0) {
-            super.onEntityCollision(level, x, y, z, entity)
+class CleansingWaterStill(identifier: Identifier) : TemplateStillLiquidBlock(identifier, Material.WATER) {
+    override fun onEntityCollision(world: World, x: Int, y: Int, z: Int, entity: Entity) {
+        if (world.getBlockMeta(x, y, z) != 0) {
+            super.onEntityCollision(world, x, y, z, entity)
             return
         }
         when (entity) {
-            is PlayerBase -> {
+            is PlayerEntity -> {
                 val handler = entity.getDivineStats()
                 if (handler.divineLevel >= USABLE_UNTIL_LEVEL) return
                 handler.divineLevel++
@@ -36,19 +36,19 @@ class CleansingWaterStill(identifier: Identifier) : TemplateStillFluid(identifie
                 } else {
                     sendChatMessage(entity, "You feel more holy. Divine level: ${handler.divineLevel}")
                 }
-                level.setTile(x, y, z, BlockBase.STILL_WATER.id)
+                world.setBlock(x, y, z, Block.WATER.id)
                 return
             }
 
             is CleansableItemEntity -> {
-                fun getNearbyItems(): HashMap<PlayerBase?, Vector<CleansableItemEntity>> {
+                fun getNearbyItems(): HashMap<PlayerEntity?, Vector<CleansableItemEntity>> {
                     @Suppress("UNCHECKED_CAST")
-                    val uncheckedItems = (level.getEntities(
+                    val uncheckedItems = (world.method_175(
                         CleansableItemEntity::class.java,
                         Box.create(x.toDouble(), y.toDouble(), z.toDouble(), x + 1.0, y + 1.0, z + 1.0)
                     ) as List<CleansableItemEntity>).toMutableList()
 
-                    return HashMap<PlayerBase?, Vector<CleansableItemEntity>>().apply {
+                    return HashMap<PlayerEntity?, Vector<CleansableItemEntity>>().apply {
                         while (uncheckedItems.isNotEmpty()) {
                             val items = Vector<CleansableItemEntity>()
                             val player = uncheckedItems[0].player
@@ -63,17 +63,17 @@ class CleansingWaterStill(identifier: Identifier) : TemplateStillFluid(identifie
                     }
                 }
 
-                fun HashMap<PlayerBase?, Vector<CleansableItemEntity>>.getRecipes(): HashMap<PlayerBase?, List<CleansingRecipe>> {
-                    return HashMap<PlayerBase?, List<CleansingRecipe>>().apply {
+                fun HashMap<PlayerEntity?, Vector<CleansableItemEntity>>.getRecipes(): HashMap<PlayerEntity?, List<CleansingRecipe>> {
+                    return HashMap<PlayerEntity?, List<CleansingRecipe>>().apply {
                         this@getRecipes.forEach { (player, items) ->
-                            set(player, CleansingRecipeRegistry.getValidRecipes(items.map { it.item }, player))
+                            set(player, CleansingRecipeRegistry.getValidRecipes(items.map { it.stack }, player))
                         }
                     }
                 }
 
-                fun HashMap<PlayerBase?, List<CleansingRecipe>>.sortByImportance(): List<Pair<PlayerBase?, CleansingRecipe>> {
+                fun HashMap<PlayerEntity?, List<CleansingRecipe>>.sortByImportance(): List<Pair<PlayerEntity?, CleansingRecipe>> {
                     if (this.isEmpty()) return emptyList()
-                    val recipes = mutableListOf<Pair<PlayerBase?, CleansingRecipe>>()
+                    val recipes = mutableListOf<Pair<PlayerEntity?, CleansingRecipe>>()
                     this.forEach { (player, playerRecipes) ->
                         recipes.addAll(playerRecipes.map { Pair(player, it) })
                     }
@@ -85,10 +85,10 @@ class CleansingWaterStill(identifier: Identifier) : TemplateStillFluid(identifie
                 val recipes = playerItems.getRecipes().sortByImportance()
 
                 recipes.forEach { (player, recipe) ->
-                    if (recipe.takeCosts(level, x, y, z, player, playerItems[player]!!)) return@onEntityCollision
+                    if (recipe.takeCosts(world, x, y, z, player, playerItems[player]!!)) return@onEntityCollision
                 }
             }
         }
-        super.onEntityCollision(level, x, y, z, entity)
+        super.onEntityCollision(world, x, y, z, entity)
     }
 }

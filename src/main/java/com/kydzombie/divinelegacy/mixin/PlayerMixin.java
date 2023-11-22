@@ -2,29 +2,29 @@ package com.kydzombie.divinelegacy.mixin;
 
 import com.kydzombie.divinelegacy.entity.CleansableItemEntity;
 import com.kydzombie.divinelegacy.registry.CleansingRecipeRegistry;
-import net.minecraft.entity.Item;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(PlayerBase.class)
+@Mixin(PlayerEntity.class)
 public abstract class PlayerMixin {
 
     @Redirect(
-            method = "dropItem(Lnet/minecraft/item/ItemInstance;Z)V",
+            method = "method_509(Lnet/minecraft/item/ItemStack;Z)V",
             at = @At(
                     value = "NEW",
-                    target = "(Lnet/minecraft/level/Level;DDDLnet/minecraft/item/ItemInstance;)Lnet/minecraft/entity/Item;"
+                    target = "(Lnet/minecraft/world/World;DDDLnet/minecraft/item/ItemStack;)Lnet/minecraft/entity/ItemEntity;"
             )
     )
-    private Item replaceWithCleansableItem(Level level, double x, double y, double z, ItemInstance itemInstance) {
-        if (CleansingRecipeRegistry.INSTANCE.isCleansable(itemInstance)) {
-            return new CleansableItemEntity(level, x, y, z, itemInstance, (PlayerBase) (Object) this);
+    private ItemEntity replaceWithCleansableItem(World world, double x, double y, double z, ItemStack stack) {
+        if (CleansingRecipeRegistry.INSTANCE.isCleansable(stack)) {
+            return new CleansableItemEntity(world, x, y, z, stack, (PlayerEntity) (Object) this);
         } else {
-            return new Item(level, x, y, z, itemInstance);
+            return new ItemEntity(world, x, y, z, stack);
         }
     }
 }

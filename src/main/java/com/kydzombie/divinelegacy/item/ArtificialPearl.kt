@@ -1,23 +1,24 @@
 package com.kydzombie.divinelegacy.item
 
 import net.minecraft.client.resource.language.I18n
-import net.minecraft.item.ItemInstance
-import net.modificationstation.stationapi.api.client.gui.CustomTooltipProvider
-import net.modificationstation.stationapi.api.registry.Identifier
-import net.modificationstation.stationapi.api.template.item.TemplateItemBase
+import net.minecraft.item.ItemStack
+import net.modificationstation.stationapi.api.client.item.CustomTooltipProvider
+import net.modificationstation.stationapi.api.template.item.TemplateItem
+import net.modificationstation.stationapi.api.util.Identifier
 
-class ArtificialPearl(identifier: Identifier) : TemplateItemBase(identifier), CustomTooltipProvider {
+class ArtificialPearl(identifier: Identifier) : TemplateItem(identifier), CustomTooltipProvider {
     private val descriptionTranslationKey: String
+
     init {
         setTranslationKey(identifier)
-        maxStackSize = 4
+        maxCount = 4
         descriptionTranslationKey = "item.${identifier}.description"
     }
 
-    override fun getTooltip(itemInstance: ItemInstance, originalTooltip: String): Array<String> {
+    override fun getTooltip(stack: ItemStack, originalTooltip: String): Array<String> {
         return arrayOf(
             originalTooltip,
-            *I18n.translate(descriptionTranslationKey).split("\n").toTypedArray()
+            *I18n.getTranslation(descriptionTranslationKey).split("\n").toTypedArray()
         )
     }
 }
